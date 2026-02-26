@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nano Banana Pro Image Generator</title>
+  <title>Nano Banana Pro - AI画像生成</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
       background: #0f0f1a;
       color: #e0e0e0;
       min-height: 100vh;
@@ -36,79 +36,6 @@
       margin: 0 auto;
       padding: 24px 16px;
     }
-
-    /* API Key */
-    .api-key-section {
-      background: #1a1a2e;
-      border: 1px solid #2a2a4a;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-
-    .api-key-section summary {
-      cursor: pointer;
-      font-size: 14px;
-      color: #aaa;
-    }
-
-    .api-key-section summary .status {
-      font-size: 12px;
-      margin-left: 8px;
-      padding: 2px 8px;
-      border-radius: 10px;
-    }
-
-    .api-key-section summary .status.set {
-      background: #1a3a1a;
-      color: #5c5;
-    }
-
-    .api-key-section summary .status.unset {
-      background: #3a1a1a;
-      color: #e55;
-    }
-
-    .api-key-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .api-key-row input {
-      flex: 1;
-      padding: 10px 14px;
-      background: #0f0f1a;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: #e0e0e0;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .api-key-row input:focus { border-color: #f0a030; }
-
-    .api-key-row button {
-      padding: 10px 16px;
-      background: #f0a030;
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .api-key-row button:hover { background: #f7b840; }
-
-    .api-key-help {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #777;
-      line-height: 1.6;
-    }
-
-    .api-key-help a { color: #f0a030; }
 
     /* Prompt */
     .prompt-section {
@@ -224,6 +151,13 @@
       flex-wrap: wrap;
     }
 
+    .option-group label {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+
     .options select {
       padding: 10px 14px;
       background: #1a1a2e;
@@ -328,36 +262,22 @@
 <body>
   <div class="header">
     <h1>Nano Banana Pro</h1>
-    <p>Gemini 3 Pro Image - AI Image Generator</p>
+    <p>AI画像生成ツール</p>
   </div>
 
   <div class="container">
-    <!-- API Key -->
-    <details class="api-key-section" id="apiKeySection">
-      <summary>API Key <span class="status unset" id="apiKeyStatus">Not Set</span></summary>
-      <div class="api-key-row">
-        <input type="password" id="apiKeyInput" placeholder="Gemini API Key">
-        <button id="saveKeyBtn">Save</button>
-      </div>
-      <div class="api-key-help">
-        <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a>
-        from get a free API key.
-        Keys are stored only in your browser's localStorage.
-      </div>
-    </details>
-
     <!-- Prompt -->
     <div class="prompt-section">
-      <label>Prompt</label>
-      <textarea id="promptInput" placeholder="Example: A cute cat wearing sunglasses on a tropical beach, digital art style"></textarea>
+      <label>プロンプト</label>
+      <textarea id="promptInput" placeholder="例: サングラスをかけた可愛い猫がトロピカルビーチにいる、デジタルアート風"></textarea>
     </div>
 
     <!-- Reference Images -->
     <div class="ref-section">
-      <label>Reference Images (optional)</label>
-      <div class="sub">Upload up to 6 images. The AI will use them as reference for generation.</div>
+      <label>参照画像（任意）</label>
+      <div class="sub">最大6枚まで画像をアップロードできます。AIが参考にして画像を生成します。</div>
       <div class="drop-zone" id="dropZone">
-        Click or drag & drop images here
+        クリックまたはドラッグ&ドロップで画像を追加
         <input type="file" id="fileInput" accept="image/*" multiple hidden>
       </div>
       <div class="ref-previews" id="refPreviews"></div>
@@ -365,22 +285,28 @@
 
     <!-- Options -->
     <div class="options">
-      <select id="aspectRatio">
-        <option value="1:1">1:1 (Square)</option>
-        <option value="16:9">16:9 (Landscape)</option>
-        <option value="9:16">9:16 (Portrait)</option>
-        <option value="4:3">4:3</option>
-        <option value="3:4">3:4</option>
-      </select>
-      <select id="imageSize">
-        <option value="1K">1K</option>
-        <option value="2K" selected>2K</option>
-        <option value="4K">4K</option>
-      </select>
+      <div class="option-group">
+        <label>アスペクト比</label>
+        <select id="aspectRatio">
+          <option value="1:1">1:1（正方形）</option>
+          <option value="16:9">16:9（横長）</option>
+          <option value="9:16">9:16（縦長）</option>
+          <option value="4:3">4:3</option>
+          <option value="3:4">3:4</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>解像度</label>
+        <select id="imageSize">
+          <option value="1K">1K</option>
+          <option value="2K" selected>2K</option>
+          <option value="4K">4K</option>
+        </select>
+      </div>
     </div>
 
     <!-- Generate -->
-    <button class="generate-btn" id="generateBtn">Generate Image</button>
+    <button class="generate-btn" id="generateBtn">画像を生成する</button>
 
     <!-- Error -->
     <div class="error" id="errorMsg"></div>
@@ -388,23 +314,19 @@
     <!-- Loading -->
     <div class="loading" id="loading">
       <div class="spinner"></div>
-      Generating with Nano Banana Pro...
+      Nano Banana Pro で生成中...
     </div>
 
     <!-- Result -->
     <div class="result" id="result">
       <div class="result-text" id="resultText"></div>
-      <img id="resultImg" alt="Generated image">
+      <img id="resultImg" alt="生成された画像">
       <br>
-      <a class="download-btn" id="downloadBtn" download="nanobananapro.png">Download</a>
+      <a class="download-btn" id="downloadBtn" download="nanobananapro.png">ダウンロード</a>
     </div>
   </div>
 
   <script>
-    const apiKeyInput = document.getElementById("apiKeyInput");
-    const saveKeyBtn = document.getElementById("saveKeyBtn");
-    const apiKeyStatus = document.getElementById("apiKeyStatus");
-    const apiKeySection = document.getElementById("apiKeySection");
     const promptInput = document.getElementById("promptInput");
     const dropZone = document.getElementById("dropZone");
     const fileInput = document.getElementById("fileInput");
@@ -419,31 +341,9 @@
     const downloadBtn = document.getElementById("downloadBtn");
     const errorMsg = document.getElementById("errorMsg");
 
-    let refImages = []; // { base64, mimeType }
+    let refImages = [];
 
-    // --- API Key ---
-    function loadApiKey() {
-      const key = localStorage.getItem("gemini_api_key") || "";
-      if (key) {
-        apiKeyInput.value = key;
-        apiKeyStatus.textContent = "Set";
-        apiKeyStatus.className = "status set";
-      }
-    }
-
-    saveKeyBtn.addEventListener("click", () => {
-      const key = apiKeyInput.value.trim();
-      if (key) {
-        localStorage.setItem("gemini_api_key", key);
-        apiKeyStatus.textContent = "Set";
-        apiKeyStatus.className = "status set";
-        apiKeySection.open = false;
-      }
-    });
-
-    loadApiKey();
-
-    // --- Reference Images ---
+    // --- 参照画像 ---
     dropZone.addEventListener("click", () => fileInput.click());
 
     dropZone.addEventListener("dragover", (e) => {
@@ -506,20 +406,13 @@
       });
     }
 
-    // --- Generate ---
+    // --- 画像生成 ---
     generateBtn.addEventListener("click", generate);
 
     async function generate() {
-      const apiKey = localStorage.getItem("gemini_api_key");
-      if (!apiKey) {
-        showError("Please set your API key first.");
-        apiKeySection.open = true;
-        return;
-      }
-
       const prompt = promptInput.value.trim();
       if (!prompt) {
-        showError("Please enter a prompt.");
+        showError("プロンプトを入力してください。");
         return;
       }
 
@@ -547,21 +440,20 @@
       };
 
       try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent?key=${apiKey}`;
-        const res = await fetch(url, {
+        const res = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body)
         });
 
+        const data = await res.json();
+
         if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.error?.message || `API error: ${res.status}`);
+          throw new Error(data.error || "APIエラーが発生しました。");
         }
 
-        const data = await res.json();
         const candidate = data.candidates?.[0]?.content?.parts;
-        if (!candidate) throw new Error("No result returned from API.");
+        if (!candidate) throw new Error("AIからの応答がありませんでした。");
 
         let imageData = null;
         let imageMime = "image/png";
